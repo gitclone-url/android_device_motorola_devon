@@ -16,7 +16,7 @@ $(call inherit-product, vendor/twrp/config/common.mk)
 $(call inherit-product, device/motorola/devon/device.mk)
 
 PRODUCT_DEVICE := devon
-PRODUCT_NAME := omni_devon
+PRODUCT_NAME := twrp_$(PRODUCT_DEVICE)
 PRODUCT_BRAND := motorola
 PRODUCT_MODEL := moto g32
 PRODUCT_MANUFACTURER := motorola
