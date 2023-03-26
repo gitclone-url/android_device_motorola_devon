@@ -121,10 +121,6 @@ PRODUCT_ENFORCE_VINTF_MANIFEST := true
 # Vibrator
 TW_SUPPORT_INPUT_AIDL_HAPTICS := true
 
-# Vibrator
-PRODUCT_PACKAGES += \
-    vendor.qti.hardware.vibrator.service
-
 #Display
 RECOVERY_LIBRARY_SOURCE_FILES += \
     $(TARGET_OUT_SHARED_LIBRARIES)/libion.so \
