@@ -8,9 +8,6 @@ DEVICE_PATH := device/motorola/devon
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
 
-# APEX
-DEXPREOPT_GENERATE_APEX_IMAGE := true
-
 # Build Hack
 BUILD_BROKEN_DUP_RULES := true
 BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
@@ -33,14 +30,22 @@ AB_OTA_PARTITIONS += \
     product \
     system \
     system_ext \
-    vendor \
     vbmeta \
     vbmeta_system \
     vendor_boot
 
+#TARGET_USES_64_BIT_BINDER := true
+TARGET_SUPPORTS_64_BIT_APPS := true
+TARGET_IS_64_BIT := true
+TARGET_BOARD_PLATFORM_GPU := qcom-adreno610
+BOARD_VENDOR := motorola 
+    
 # Bluetooth
 TARGET_FWK_SUPPORTS_FULL_VALUEADDS := true
 TARGET_USE_QTI_BT_STACK := true
+
+# Enable python
+TW_INCLUDE_PYTHON := true
 
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := bengal
@@ -77,13 +82,18 @@ BOARD_TAGS_OFFSET := 0x00000100
 
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
+BOARD_MKBOOTIMG_ARGS += --base $(BOARD_KERNEL_BASE)
+BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
+BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 
 BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
 TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
 
 BOARD_KERNEL_CMDLINE += androidboot.console=ttyMSM0
-BOARD_KERNEL_CMDLINE += androidboot.usbcontroller=4e00000.dwc3
 BOARD_KERNEL_CMDLINE += androidboot.fstab_suffix=default
 BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom
 BOARD_KERNEL_CMDLINE += androidboot.memcg=1
@@ -99,34 +109,7 @@ BOARD_KERNEL_CMDLINE += swiotlb=2048
 TARGET_FORCE_PREBUILT_KERNEL := true
 TARGET_KERNEL_ARCH := arm64
 
-# Kernel module loading
-TW_LOAD_VENDOR_MODULES := "exfat.ko \
-            nova_0flash_mmi.ko \
-            ili9882_mmi.ko \
-            mmi_sys_temp.ko \
-            moto_f_usbnet.ko \
-            qpnp_adaptive_charge.ko \
-            qpnp-power-on-mmi.ko \
-            sensors_class.ko \
-            utags.ko \
-            adapter_class.ko \
-            mmi_qc3p_wt6670f.ko \
-            mmi_charger.ko \
-            mmi_discrete_charger_class.ko \
-            mmi_discrete_charger.ko \
-            sgm4154x_charger.ko \
-            rt9471_charger.ko \
-            qpnp_adaptive_charge.ko \
-            tcpc_class.ko \
-            cw2217b_fg_mmi.ko \
-            mmi_annotate.ko \
-            mmi_info.ko \
-            sm5602_fg_mmi.ko \
-            bq2597x_mmi_iio.ko \
-            mmi_discrete_turbo_charger.ko \
-            tcpc_sgm7220.ko \
-            focaltech_0flash_v2_mmi.ko \
-            rt_pd_manager.ko"
+
 # Metadata
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
 BOARD_USES_METADATA_PARTITION := true
@@ -151,9 +134,9 @@ BOARD_USES_SYSTEM_EXTIMAGE := true
 BOARD_USES_PRODUCTIMAGE := true
 BOARD_HAS_LARGE_FILESYSTEM := true
 
-BUILD_WITHOUT_VENDOR := true
 
 TARGET_COPY_OUT_SYSTEM_EXT := system_ext
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_PRODUCT := product
 
@@ -175,7 +158,7 @@ TARGET_USERIMAGES_USE_F2FS := true
 TARGET_USES_MKE2FS := true
 
 # Treble
-BOARD_VNDK_VERSION := current
+BOARD_VNDK_VERSION := 30
 
 # UEFI
 TARGET_USES_UEFI := true
@@ -190,9 +173,66 @@ BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 1
 
-# PBRP specific build flags
-PB_DISABLE_DEFAULT_DM_VERITY := true
-PB_TORCH_PATH := "/sys/class/leds/flashlight"
+##### TWRP Flags #####
+TW_THEME := portrait_hdpi
+
+# Include more languages than English
+TW_EXTRA_LANGUAGES := true
+
+# Misc
+TW_INPUT_BLACKLIST := "hbtp_vm"
+TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
+TW_CUSTOM_CPU_TEMP_PATH := "/sys/class/thermal/thermal_zone39/temp"
+TW_DEFAULT_BRIGHTNESS := 1200
+TW_Y_OFFSET := 91
+TW_H_OFFSET := -91
+TW_DEFAULT_BRIGHTNESS := 1800
+
+# Add support to wake with touch after sleep
+TW_NO_SCREEN_BLANK := true
+
+# Remove vibration support
+TW_NO_HAPTICS := true
+
+# Time
+TARGET_RECOVERY_QCOM_RTC_FIX := true
+
+# Statusbar icons flags
+TW_STATUS_ICONS_ALIGN := center
+TW_CUSTOM_CLOCK_POS := 50
+TW_CUSTOM_CPU_POS := 280
+TW_CUSTOM_BATTERY_POS := 790
+
+# Use our own USB config
+TW_EXCLUDE_DEFAULT_USB_INIT := true
+
+# For mounting NTFS
+TW_INCLUDE_NTFS_3G := true
+
+# Use mke2fs to create ext4 images
+TARGET_USES_MKE2FS := true
+
+# Include magiskboot for repacking bootimg
+TW_INCLUDE_REPACKTOOLS := true
+
+# Kernel module loading for touch, battery etc
+TW_LOAD_VENDOR_MODULES := $(shell echo \"$(shell ls $(DEVICE_PATH)/prebuilt/modules)\")
+
+# Include decryption support
+TW_INCLUDE_CRYPTO := true
+RECOVERY_SDCARD_ON_DATA := true
+# include below when enabling decryption
+# without these it may stuck on TWRP splash
+TARGET_RECOVERY_DEVICE_MODULES += libion
+RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libion.so
+
+# Don't mount apex files (no need for now)
+TW_EXCLUDE_APEX := true
+
+# Debuging flags
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
+TW_INCLUDE_RESETPROP := true
 
 # Hack: prevent anti rollback
 PLATFORM_SECURITY_PATCH := 2099-12-31

@@ -28,14 +28,15 @@
  */
 
 
+#define LOG_NDEBUG 0
 #define LOG_TAG "recovery_ufs"
 
 #include "recovery-ufs-bsg.h"
 
 #ifndef _BSG_FRAMEWORK_KERNEL_HEADERS
 #ifndef _GENERIC_KERNEL_HEADERS
-#include "include/ioctl.h"
-#include "include/ufs.h"
+#include <scsi/ufs/ioctl.h>
+#include <scsi/ufs/ufs.h>
 #endif
 #endif
 
@@ -252,3 +253,4 @@ error:
 #endif
 }
 #endif
+

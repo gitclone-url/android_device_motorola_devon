@@ -17,6 +17,10 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 # Setup dalvik vm configs
 $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 
+# fscrypt policy
+TW_USE_FSCRYPT_POLICY := 2
+
+
 # API
 PRODUCT_TARGET_VNDK_VERSION := 30
 PRODUCT_SHIPPING_API_LEVEL := 31
@@ -48,11 +52,19 @@ PRODUCT_PACKAGES += \
     
 # Boot control
 PRODUCT_PACKAGES += \
-    android.hardware.boot@1.1-impl-qti.recovery \
     libgptutils \
     libz \
     libcutils
     
+# Boot control hal for A/B
+PRODUCT_PACKAGES += android.hardware.boot@1.1-impl-qti-sm6225.recovery
+PRODUCT_PACKAGES += \
+    android.hardware.boot@1.1-service
+    
+# Blacklist
+PRODUCT_SYSTEM_PROPERTY_BLACKLIST += ro.bootimage.build.date.utc ro.build.date.utc
+
+
 PRODUCT_PACKAGES_DEBUG += \
     bootctl
 
@@ -70,10 +82,6 @@ PRODUCT_PACKAGES += \
     init.recovery.qcom.sh \
     init.recovery.qcom.rc
 
-# Soong namespaces
-PRODUCT_SOONG_NAMESPACES += \
-    $(LOCAL_PATH) \
-    hardware/qcom-caf/bootctrl
 
 # Update engine
 PRODUCT_PACKAGES += \
@@ -105,33 +113,6 @@ BOARD_USES_QCOM_FBE_DECRYPTION := true
 
 TARGET_RECOVERY_DEVICE_MODULES += libion vendor.display.config@1.0 vendor.display.config@2.0 libdisplayconfig.qti vendor.qti.hardware.vibrator.service vendor.qti.hardware.vibrator.impl libqtivibratoreffect
 
-# TWRP specific build flags
-TW_THEME := portrait_hdpi
-RECOVERY_SDCARD_ON_DATA := true
-TARGET_RECOVERY_QCOM_RTC_FIX := true
-TW_EXCLUDE_DEFAULT_USB_INIT := true
-TW_EXTRA_LANGUAGES := true
-TW_INCLUDE_NTFS_3G := true
-TW_USE_TOOLBOX := true
-TW_INCLUDE_RESETPROP := true
-TW_INCLUDE_REPACKTOOLS := true
-TW_INPUT_BLACKLIST := "hbtp_vm"
-TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
-TW_CUSTOM_CPU_TEMP_PATH := "/sys/class/thermal/thermal_zone39/temp"
-TW_DEFAULT_BRIGHTNESS := 1200
-TW_Y_OFFSET := 91
-TW_H_OFFSET := -91
-TWRP_INCLUDE_LOGCAT := true
-TARGET_USES_LOGD := true
-TARGET_USES_MKE2FS := true
-TW_NO_SCREEN_BLANK := true
-TW_EXCLUDE_APEX := true
-TW_FRAMERATE := 60
-TW_NO_FLASH_CURRENT_TWRP := true
-
-#Properties
-TW_OVERRIDE_SYSTEM_PROPS := \
-    "ro.build.fingerprint=ro.system.build.fingerprint;ro.build.version.incremental"
 
 # Hidl Service
 PRODUCT_ENFORCE_VINTF_MANIFEST := true    

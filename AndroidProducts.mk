@@ -4,9 +4,9 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/omni_devon.mk
+    $(LOCAL_DIR)/twrp_devon.mk
 
 COMMON_LUNCH_CHOICES := \
-    omni_devon-user \
-    omni_devon-userdebug \
-    omni_devon-eng
+    twrp_devon-user \
+    twrp_devon-userdebug \
+    twrp_devon-eng
