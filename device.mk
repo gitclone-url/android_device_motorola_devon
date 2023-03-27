@@ -22,7 +22,7 @@ TW_USE_FSCRYPT_POLICY := 2
 
 
 # API
-PRODUCT_TARGET_VNDK_VERSION := 30
+PRODUCT_EXTRA_VNDK_VERSIONS := 30
 PRODUCT_SHIPPING_API_LEVEL := 31
 
 # Boot animation
@@ -113,13 +113,6 @@ BOARD_USES_QCOM_FBE_DECRYPTION := true
 
 # Modules
 TARGET_RECOVERY_DEVICE_MODULES += libion vendor.display.config@1.0 vendor.display.config@2.0 libdisplayconfig.qti
-
-
-# Hidl Service
-PRODUCT_ENFORCE_VINTF_MANIFEST := true    
-
-# Vibrator
-TW_SUPPORT_INPUT_AIDL_HAPTICS := true
 
 #Display
 RECOVERY_LIBRARY_SOURCE_FILES += \
