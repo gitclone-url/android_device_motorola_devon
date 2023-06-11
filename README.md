@@ -1,3 +1,3 @@
-# WIP 
+# Status 
 
-## WORK IN PROGRESS
+## Booting but stuck in logo 🦊
