@@ -1,240 +1,108 @@
-# Copyright (C) 2023 The Android Open Source Project
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
-DEVICE_PATH := device/motorola/devon
-
-# For building with minimal manifest
-ALLOW_MISSING_DEPENDENCIES := true
-
-# Build Hack
-BUILD_BROKEN_DUP_RULES := true
-BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
-BUILD_BROKEN_PREBUILT_ELF_FILES := true
-BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES:= true
-RELAX_USES_LIBRARY_CHECK=true
-
-# DRM
-TARGET_ENABLE_MEDIADRM_64 := true
-
-
-# A/B
-AB_OTA_UPDATER := true
-BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
-BOARD_USES_RECOVERY_AS_BOOT := true
-
-AB_OTA_PARTITIONS += \
-    boot \
-    dtbo \
-    product \
-    system \
-    system_ext \
-    vbmeta \
-    vbmeta_system \
-    vendor_boot
-
-#TARGET_USES_64_BIT_BINDER := true
-TARGET_SUPPORTS_64_BIT_APPS := true
-TARGET_IS_64_BIT := true
-TARGET_BOARD_PLATFORM_GPU := qcom-adreno610
-BOARD_VENDOR := motorola 
-    
-# Bluetooth
-TARGET_FWK_SUPPORTS_FULL_VALUEADDS := true
-TARGET_USE_QTI_BT_STACK := true
-
-# Enable python
-TW_INCLUDE_PYTHON := true
+# Platform
+TARGET_BOARD_PLATFORM := bengal
+BOARD_USES_QCOM_HARDWARE      := true
 
 # Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := bengal
-TARGET_NO_BOOTLOADER := true
-
+TARGET_BOOTLOADER_BOARD_NAME := $(PRODUCT_DEVICE)
 
 # Architecture
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 := 
-TARGET_CPU_VARIANT := generic
-TARGET_CPU_VARIANT_RUNTIME := generic
+TARGET_CPU_VARIANT := cortex-a73
+TARGET_CPU_VARIANT_RUNTIME := cortex-a73
 
 TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv7-a-neon
+TARGET_2ND_ARCH_VARIANT := armv8-a
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
-TARGET_2ND_CPU_VARIANT := generic
-TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a9
+TARGET_2ND_CPU_VARIANT := cortex-a53
+TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a53
 
-# Display
-TARGET_SCREEN_DENSITY := 405
+# A/B flags
+AB_OTA_UPDATER := true
+AB_OTA_PARTITIONS += system system_ext product vbmeta_system vendor
+BOARD_USES_RECOVERY_AS_BOOT := true
+ENABLE_VIRTUAL_AB := true
+TARGET_NO_RECOVERY := true
+TARGET_COPY_OUT_VENDOR := vendor
 
 # Kernel
 BOARD_BOOT_HEADER_VERSION := 3
-BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_OFFSET := 0x00008000
-BOARD_KERNEL_PAGESIZE := 4096
-BOARD_KERNEL_IMAGE_NAME := Image
-BOARD_KERNEL_SEPARATED_DTBO := false
-BOARD_RAMDISK_OFFSET := 0x01000000
-BOARD_TAGS_OFFSET := 0x00000100
-
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
-BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
-BOARD_MKBOOTIMG_ARGS += --base $(BOARD_KERNEL_BASE)
-BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
-BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_TAGS_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
-
-BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
-TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
+BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
+BOARD_AVB_ENABLE := true
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
 
-BOARD_KERNEL_CMDLINE += androidboot.console=ttyMSM0
-BOARD_KERNEL_CMDLINE += androidboot.fstab_suffix=default
-BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom
-BOARD_KERNEL_CMDLINE += androidboot.memcg=1
-BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
-BOARD_KERNEL_CMDLINE += console=ttyMSM0,115200n8
-BOARD_KERNEL_CMDLINE += earlycon=msm_geni_serial,0x4a90000
-BOARD_KERNEL_CMDLINE += loop.max_part=7
-BOARD_KERNEL_CMDLINE += lpm_levels.sleep_disabled=1
-BOARD_KERNEL_CMDLINE += msm_rtb.filter=0x237
-BOARD_KERNEL_CMDLINE += service_locator.enable=1
-BOARD_KERNEL_CMDLINE += swiotlb=2048
+# Broken stuffs
+ALLOW_MISSING_DEPENDENCIES := true
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
+BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
 
-TARGET_FORCE_PREBUILT_KERNEL := true
-TARGET_KERNEL_ARCH := arm64
+#######################
+# Decryption support
+#######################
 
-
-# Metadata
-BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
-BOARD_USES_METADATA_PARTITION := true
-
-# Partitions
-BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
-BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
-BOARD_DTBOIMG_PARTITION_SIZE := 25165824
-BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 118111600640
-BOARD_SUPER_PARTITION_SIZE := 9126805504
-BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := system system_ext vendor product
-BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 9126805504
-
-BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
-BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_USES_SYSTEM_EXTIMAGE := true
-BOARD_USES_PRODUCTIMAGE := true
-BOARD_HAS_LARGE_FILESYSTEM := true
-
-
-TARGET_COPY_OUT_SYSTEM_EXT := system_ext
-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-TARGET_COPY_OUT_VENDOR := vendor
-TARGET_COPY_OUT_PRODUCT := product
-
-# Platform
-BOARD_USES_QCOM_HARDWARE := true
-TARGET_BOARD_PLATFORM := bengal
-
-# Power
-TARGET_USES_INTERACTION_BOOST := true
-
-# Properties
-TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
-
-# Recovery
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
-TARGET_USES_MKE2FS := true
-
-# Treble
-BOARD_VNDK_VERSION := current
-
-# UEFI
-TARGET_USES_UEFI := true
-
-# Verified Boot
-BOARD_AVB_ENABLE := true
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --set_hashtree_disabled_flag
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 2
-BOARD_AVB_VBMETA_SYSTEM := system system_ext
-BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
-BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
-BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
-BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 1
-
-##### TWRP Flags #####
-TW_THEME := portrait_hdpi
-
-# Include more languages than English
-TW_EXTRA_LANGUAGES := true
-
-# Misc
-TW_INPUT_BLACKLIST := "hbtp_vm"
-TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
-TW_CUSTOM_CPU_TEMP_PATH := "/sys/class/thermal/thermal_zone39/temp"
-TW_DEFAULT_BRIGHTNESS := 1200
-TW_Y_OFFSET := 91
-TW_H_OFFSET := -91
-TW_DEFAULT_BRIGHTNESS := 1800
-
-# Add support to wake with touch after sleep
-TW_NO_SCREEN_BLANK := true
-
-# Remove vibration support
-TW_NO_HAPTICS := true
-
-# Time
-TARGET_RECOVERY_QCOM_RTC_FIX := true
-
-# Statusbar icons flags
-TW_STATUS_ICONS_ALIGN := center
-TW_CUSTOM_CLOCK_POS := 50
-TW_CUSTOM_CPU_POS := 280
-TW_CUSTOM_BATTERY_POS := 790
-
-# Use our own USB config
-TW_EXCLUDE_DEFAULT_USB_INIT := true
-
-# For mounting NTFS
-TW_INCLUDE_NTFS_3G := true
-
-# Use mke2fs to create ext4 images
-TARGET_USES_MKE2FS := true
-
-# Include magiskboot for repacking bootimg
-TW_INCLUDE_REPACKTOOLS := true
-
-# Kernel module loading for touch, battery etc
-TW_LOAD_VENDOR_MODULES := $(shell echo \"$(shell ls $(DEVICE_PATH)/prebuilt/modules)\")
-
-# Include decryption support
+# TWRP - Crypto
 TW_INCLUDE_CRYPTO := true
-RECOVERY_SDCARD_ON_DATA := true
-# include below when enabling decryption
-# without these it may stuck on TWRP splash
-TARGET_RECOVERY_DEVICE_MODULES += libion
+TW_INCLUDE_CRYPTO_FBE := true
+TW_INCLUDE_FBE_METADATA_DECRYPT := true
+BOARD_USES_QCOM_FBE_DECRYPTION := true
+PLATFORM_VERSION := 99.87.36
+PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
+
+PLATFORM_SECURITY_PATCH := 2127-12-31
+VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
+BOOT_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
+
+OF_DEFAULT_KEYMASTER_VERSION := 4.1
+TW_FORCE_KEYMASTER_VER := true
+
+BOARD_USES_METADATA_PARTITION := true
+BOARD_ROOT_EXTRA_FOLDERS := metadata
+
+TARGET_RECOVERY_DEVICE_MODULES += libion 
 RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libion.so
 
-# Don't mount apex files (no need for now)
-TW_EXCLUDE_APEX := true
+###############################
+# TWRP specific build flags
+###############################
 
-# Debuging flags
+TW_THEME := portrait_hdpi
+RECOVERY_SDCARD_ON_DATA := true
 TWRP_INCLUDE_LOGCAT := true
-TARGET_USES_LOGD := true
-TW_INCLUDE_RESETPROP := true
 
-# Hack: prevent anti rollback
-PLATFORM_SECURITY_PATCH := 2099-12-31
-VENDOR_SECURITY_PATCH := 2099-12-31
-PLATFORM_VERSION := 16.1.0
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
+TARGET_RECOVERY_QCOM_RTC_FIX := true
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
+TARGET_USES_LOGD := true
+TARGET_USES_MKE2FS := true
+TARGET_USERIMAGES_USE_F2FS := true
+
+TW_EXCLUDE_DEFAULT_USB_INIT := true
+TW_EXCLUDE_TWRPAPP := true
+TW_EXTRA_LANGUAGES := true
+TW_FRAMERATE := 90
+TW_INCLUDE_FASTBOOTD := true
+TW_INCLUDE_LIBRESETPROP := true
+TW_INCLUDE_NTFS_3G := true
+TW_INCLUDE_PYTHON := true
+TW_INCLUDE_REPACKTOOLS := true
+TW_INCLUDE_RESETPROP := true
+TW_NO_SCREEN_BLANK := true
+TW_SCREEN_BLANK_ON_BOOT := true
+TW_USE_TOOLBOX := true
+
+# Brightness
+TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
+TW_DEFAULT_BRIGHTNESS := 500
+TW_MAX_BRIGHTNESS := 2047
+
+# Battery
+TW_CUSTOM_BATTERY_PATH := "/sys/class/power_supply/battery"
+TW_BATTERY_SYSFS_WAIT_SECONDS := 5
+
+# Kernel module loading for touch, battery etc
+TW_LOAD_VENDOR_MODULES := $(shell echo \"$(shell ls $(DEVICE_PATH)/recovery/root/vendor/lib/modules/1.1)\")
+TW_LOAD_VENDOR_BOOT_MODULES := true
+

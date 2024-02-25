@@ -1,12 +1,12 @@
 cc_library_headers {
-    name: "librecovery_updater_kernel_headers.sm6225",
+    name: "librecovery_updater_kernel_headers.devon",
     export_include_dirs: ["kernel_headers"],
     recovery_available: true,
     vendor_available: true,
 }
 
 cc_library {
-    name: "librecovery_updater.sm6225",
+    name: "librecovery_updater.devon",
     vendor: true,
     recovery_available: true,
     shared_libs: [
@@ -24,5 +24,5 @@ cc_library {
     ],
     owner: "qti",
     export_include_dirs: ["."],
-    header_libs: ["librecovery_updater_kernel_headers.sm6225"],
+    header_libs: ["librecovery_updater_kernel_headers.devon"],
 }

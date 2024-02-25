@@ -3,7 +3,7 @@ or the same is also available at https://github.com/LineageOS/android_hardware_q
 and applied this patch https://github.com/LineageOS/android_device_motorola_nash/commit/ba70a48f8d0ab12666d2d37e31f581697423ae02
 to work for slot partitions in different disks
 
-In Moto G52(rhode), _a slot partitions are in disk `sdd` and _b slot partitions are in disk `sdf`
+In Moto G32(devon), _a slot partitions are in disk `sdd` and _b slot partitions are in disk `sdf`
 
 
 2) Sources in oem-recovery are taken from https://git.codelinaro.org/clo/la/platform/vendor/qcom-opensource/recovery-ext/-/tree/de99450655a34f355b7c24cdb2337c0b084b75e8/oem-recovery

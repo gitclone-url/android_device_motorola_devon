@@ -1,3 +1,5 @@
+Unofficial OrangeFox Device Tree for Motorola G32 (devon)
+
 # Status 
 
-## Booting but stuck in logo 🦊
+Working - All

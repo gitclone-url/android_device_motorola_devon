@@ -1,92 +1,58 @@
-import /init.recovery.qcom_decrypt.rc
+import /init.services.qcom.rc
 
- on early-init
-    insmod /lib/modules/mmi_annotate.ko
-    insmod /lib/modules/mmi_info.ko
-    insmod /lib/modules/adapter_class.ko
-    insmod /lib/modules/mmi_qc3p_wt6670f.ko
-    insmod /lib/modules/mmi_charger.ko
-    insmod /lib/modules/mmi_discrete_charger_class.ko
-    insmod /lib/modules/mmi_discrete_charger.ko
-    insmod /lib/modules/sgm4154x_charger.ko
-    insmod /lib/modules/rt9471_charger.ko
-    insmod /lib/modules/qpnp_adaptive_charge.ko
-    insmod /lib/modules/tcpc_class.ko
-    insmod /lib/modules/cw2217b_fg_mmi.ko
-    insmod /lib/modules/sm5602_fg_mmi.ko
-    insmod /lib/modules/bq2597x_mmi_iio.ko
-    insmod /lib/modules/mmi_discrete_turbo_charger.ko
-    insmod /lib/modules/tcpc_sgm7220.ko
-    insmod /lib/modules/rt_pd_manager.ko
-
-    
 on init
+    start boot-hal-1-1
+    
+on boot
+    setprop sys.usb.config adb
+
+on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
+    chmod 0660 /dev/qseecom
+    chown system drmrpc /dev/qseecom
+    chmod 0664 /dev/ion
+    chown system system /dev/ion
+    
+    # Change ownership and permission for vibrator
+    chown system system /sys/class/timed_output/vibrator/enable
+    chmod 0660 /sys/class/timed_output/vibrator/enable
+    chown system system /sys/class/leds/vibrator/state
+    chmod 0660 /sys/class/leds/vibrator/state
+    chown system system /sys/class/leds/vibrator/activate
+    chmod 0660 /sys/class/leds/vibrator/activate
+    chown system system /sys/class/leds/vibrator/duration
+    chmod 0660 /sys/class/leds/vibrator/duration
+    chown system system /sys/class/leds/vibrator/seq
+    chmod 0660 /sys/class/leds/vibrator/seq
+    chown system system /sys/class/leds/vibrator/extra
+    chmod 0660 /sys/class/leds/vibrator/extra
+    chown root vendor_mod /sys/bus/i2c/devices/2-005a/reduce
+
+on boot
+    start health-hal-2-1
+    setprop sys.usb.config adb
 
 on property:ro.crypto.state=encrypted && property:ro.crypto.type=file
     install_keyring
 
 on property:ro.crypto.state=encrypted && property:hwservicemanager.ready=true
-    start qseecomd
+    start vendor.qseecomd
 
 on property:vendor.sys.listeners.registered=true
     start gatekeeper-1-0-qti
     start keymaster-4-1-qti
 
 on property:twrp.all.users.decrypted=true
-    stop qseecomd
+    stop vendor.qseecomd
     stop gatekeeper-1-0-qti
     stop keymaster-4-1-qti
 
-service qseecomd /vendor/bin/qseecomd
-    user root
-    group root
-    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64
-    disabled
-    seclabel u:r:recovery:s0
+on property:ro.crypto.state=encrypted && property:ro.crypto.type=file
+    chmod 0777 /system/bin/wrappedkey-fix.sh
+    start wrapped-key
 
-service gatekeeper-1-0-qti /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
-    user root
-    group root
-    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64
-    disabled
-    seclabel u:r:recovery:s0
+# Haptic feedback
+on property:twrp.modules.loaded=true
+    start vendor.mot.vibrator-hal-1-0
 
-service keymaster-4-1-qti /vendor/bin/hw/android.hardware.keymaster@4.1-service-qti
-    user root
-    group root
-    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64
-    disabled
-    seclabel u:r:recovery:s0
-    
-service overrideprops /system/bin/overrideprops.sh
-    user root
-    group root
-    disabled
-    oneshot
-    seclabel u:r:recovery:s0
-    
-service runatboot /system/bin/runatboot.sh
-    oneshot
-    user root
-    group root
-    disabled
-    seclabel u:r:recovery:s0    
-
-service vendor.qti.vibrator /system/bin/vendor.qti.hardware.vibrator.service
-    user root
-    group root
-    disabled
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
-    seclabel u:r:recovery:s0
-
-on post-fs
-    start boot-hal-1-1
-
-on boot
-    start overrideprops
-    start health-hal-2-1
-    start vendor.qti.vibrator
-    setprop sys.usb.config adb
-    start runatboot

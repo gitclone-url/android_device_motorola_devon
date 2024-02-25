@@ -1,10 +1,10 @@
 cc_library {
-    name: "libboot_control_qti.sm6225",
+    name: "libboot_control_qti",
     vendor: true,
     recovery_available: true,
     shared_libs: [
         "android.hardware.boot@1.1",
-        "librecovery_updater.sm6225",
+        "librecovery_updater.devon",
         "libbase",
         "libcutils",
         "liblog",

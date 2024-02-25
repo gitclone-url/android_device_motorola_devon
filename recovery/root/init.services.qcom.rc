@@ -1,0 +1,39 @@
+service vendor.qseecomd /vendor/bin/qseecomd
+    socket notify-topology stream 660 system drmrpc
+    class core
+    user root
+    group root drmrpc
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/system/lib64:/sbin
+    seclabel u:r:recovery:s0
+
+service gatekeeper-1-0-qti /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
+    class early_hal
+    user root
+    group root
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/system/lib64:/sbin
+    seclabel u:r:recovery:s0
+
+service keymaster-4-1-qti /vendor/bin/hw/android.hardware.keymaster@4.1-service-qti
+    class early_hal
+    user root
+    group root
+    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64
+    disabled
+    seclabel u:r:recovery:s0
+    
+service vendor.mot.vibrator-hal-1-0 /vendor/bin/hw/motorola.hardware.vibrator@1.0-service
+    class hal
+    user root
+    group root vendor_mod
+    onrestart restart vibratorfeature
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/system/lib64:/sbin
+    disabled
+    seclabel u:r:recovery:s0
+
+service wrapped-key /system/bin/wrappedkey-fix.sh
+    user root
+    group root
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+

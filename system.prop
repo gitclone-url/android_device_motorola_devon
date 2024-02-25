@@ -1,11 +1,27 @@
-ro.display.series=moto g32
-ro.product.board=devon
+# Device
+ro.display.series=Moto G32
 ro.board.platform=bengal
-ro.product.first_api_level=31
-persist.sys.isUsbOtgEnabled=true
-vendor.gatekeeper.disable_spu=true
+ro.product.board=devon
+
+# AVB
+ro.boot.avb_version=1.0
+ro.boot.vbmeta.avb_version=1.0
+
+# ADB
 ro.adb.secure=0
-fbe.metadata.wrappedkey=true
+
+# Dynamic
 ro.boot.dynamic_partitions=true
-ro.crypto.volume.filenames_mode=aes-256-cts
 ro.virtual_ab.enabled=true
+
+# USB
+sys.usb.controller=4e00000.dwc3
+sys.usb.rndis.func.name=rndis_bam
+sys.usb.rmnet.func.name=rmnet_bam
+
+# Crypto
+vendor.gatekeeper.disable_spu=true
+ro.crypto.dm_default_key.options_format.version=2
+ro.crypto.volume.filenames_mode=aes-256-cts
+ro.crypto.volume.metadata.method=dm-default-key
+fbe.metadata.wrappedkey=true

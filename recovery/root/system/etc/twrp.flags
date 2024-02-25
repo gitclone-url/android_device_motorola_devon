@@ -1,26 +1,31 @@
-# Android fstab file.
-# The filesystem that contains the filesystem checker binary (typically /system) cannot
-# specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
+# Standard AOSP partitions
+/boot             	emmc    /dev/block/bootdevice/by-name/boot		flags=slotselect
+/dtbo             	emmc    /dev/block/bootdevice/by-name/dtbo		flags=slotselect;flashimg;backup;display=Dtbo
+/vbmeta           	emmc    /dev/block/bootdevice/by-name/vbmeta		flags=slotselect;flashimg;backup;display=Vbmeta
+/vbmeta_system	  	emmc    /dev/block/bootdevice/by-name/vbmeta_system	flags=slotselect;flashimg;backup;display=Vbmeta_system
+/vendor_boot      	emmc    /dev/block/bootdevice/by-name/vendor_boot	flags=slotselect;flashimg;backup;display=Vendor_boot
 
-# mount point  fstype  device                             device2                flags
+# Logical
+/system_image	  	emmc    /dev/block/mapper/system			flags=slotselect;flashimg;backup;display=System
+/system_ext_image	emmc    /dev/block/mapper/system_ext			flags=slotselect;flashimg;backup;display="System Ext"
+/product_image		emmc    /dev/block/mapper/product			flags=slotselect;flashimg;backup;display=Product
+/vendor_image		emmc    /dev/block/mapper/vendor			flags=slotselect;flashimg;backup;display=Vendor
 
-/metadata      ext4    /dev/block/bootdevice/by-name/metadata                    flags=display="Metadata";backup=1;wrappedkey
-/data          f2fs    /dev/block/bootdevice/by-name/userdata                    flags=fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized+wrappedkey_v0,metadata_encryption=aes-256-xts:wrappedkey_v0,keydirectory=/metadata/vold/metadata_encryption
-/boot          emmc    /dev/block/bootdevice/by-name/boot                        flags=backup=1;flashimg=1;slotselect
-/dtbo          emmc    /dev/block/bootdevice/by-name/dtbo                        flags=backup=1;display="Dtbo";flashimg=1;slotselect
-/firmware      vfat    /dev/block/bootdevice/by-name/modem                       flags=display="Firmware";slotselect
-/cust          ext4    /dev/block/bootdevice/by-name/cust                        flags=display="Cust"
-/misc          emmc    /dev/block/bootdevice/by-name/misc
-/modem         emmc    /dev/block/bootdevice/by-name/modem                       flags=backup=1;display="Modem";slotselect
-/bluetooth     emmc    /dev/block/bootdevice/by-name/bluetooth                   flags=backup=1;subpartitionof=/modem;slotselect
-/dsp           emmc    /dev/block/bootdevice/by-name/dsp                         flags=backup=1;subpartitionof=/modem;slotselect
-/efs1          emmc    /dev/block/bootdevice/by-name/modemst1                    flags=backup=1;display=EFS
-/efs2          emmc    /dev/block/bootdevice/by-name/modemst2                    flags=backup=1;subpartitionof=/efs1
-/efsc          emmc    /dev/block/bootdevice/by-name/fsc                         flags=backup=1;subpartitionof=/efs1
-/efsg          emmc    /dev/block/bootdevice/by-name/fsg                         flags=backup=1;subpartitionof=/efs1
-/persist       ext4    /dev/block/bootdevice/by-name/persist                     flags=display="Persist"
-/persist_image emmc    /dev/block/bootdevice/by-name/persist                     flags=display="Persist";flashimg=1
+# Qcom
+/persist		ext4    /dev/block/bootdevice/by-name/persist
+/persist_image		emmc	/dev/block/bootdevice/by-name/persist		flags=flashimg;backup;display=Persist
+/efs1			emmc	/dev/block/bootdevice/by-name/modemst1		flags=backup;display=EFS
+/efs2			emmc	/dev/block/bootdevice/by-name/modemst2		flags=backup;subpartitionof=/efs1
+/modemst1		emmc	/dev/block/bootdevice/by-name/modemst1		flags=flashimg;backup;display=ModemST1
+/modemst2		emmc	/dev/block/bootdevice/by-name/modemst2		flags=flashimg;backup;display=ModemST2
+/efsc			emmc	/dev/block/bootdevice/by-name/fsc		flags=flashimg;backup;display=FSC
+/efsg			emmc	/dev/block/bootdevice/by-name/fsg		flags=slotselect;flashimg;backup;display=FSG
+
+# Moto
+/prodpersist		emmc    /dev/block/bootdevice/by-name/prodpersist	flags=flashimg;backup;display=ProdPersist
+/logo			emmc    /dev/block/bootdevice/by-name/logo		flags=slotselect;flashimg;backup;display=Logo
 
 # Removable storage
-/usb_otg       vfat    /dev/block/sdg1                    /dev/block/sdg         flags=fsflags=utf8;display="USB-OTG";storage;wipeingui;removable
-/external_sd   vfat     /dev/block/mmcblk0p1  /dev/block/mmcblk0   flags=display="MicroSD";storage;wipeingui;removable
+/external_sd		auto    /dev/block/mmcblk0p1
+/usb-otg		auto    /dev/block/sdg1		/dev/block/sdg		flags=fsflags=utf8;display="USB-OTG";storage;wipeingui;removable
+
